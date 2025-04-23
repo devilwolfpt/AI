@@ -1,0 +1,88 @@
+body {
+        background-color: #f1e8b2;
+        background-image: url("Wallpepar.png");
+        background-position: center; /* Centraliza a imagem */
+        /* background-repeat: no-repeat; Evita que a imagem se repita */
+        /* background-size: cover; Faz a imagem cobrir toda a área do corpo */
+        font-family: Arial, sans-serif;
+    }
+
+    .container{
+        background-color: #504f497e;
+        border: 2px #ff98dd solid;
+        border-radius: 10px;
+        border-left: 10px #ff98dd solid;
+        padding: 10px;
+        width: auto;
+        height: auto;
+    }
+
+    h1{
+        color: #ff98dd;
+    }
+
+    label{
+        color: #ff98dd;
+    }
+
+    input[type="checkbox"], input[type="radio"]{
+        accent-color: #ff98dd;
+        cursor: pointer;
+    }
+
+    h1{
+        position: sticky;
+        color: #331f19;
+        background-color: #ff98dd;
+        border-radius: 5px;
+        top: 0px;
+        text-align: center;
+        padding: 0.8rem;
+        width: auto;
+        height: auto;
+    }
+
+    footer {
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+        width: 100%;
+        background-color: #ff98dd57;
+        color: #000000;
+        text-align: center;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between; /* Espaça o texto e os botões */
+        align-items: center; /* Alinha verticalmente */
+    }
+    
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .footer-content p {
+        margin: 0 1rem;
+    }
+    
+    .menu {
+        display: flex;
+        gap: 0.5rem; /* Espaçamento entre os botões */
+    }
+    
+    button {
+        background-color: #ff71d0;
+        color: #000000;
+        border: none;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+    }
+    
+    button:hover {
+        background-color: #e682ff;
+        color: #000000;
+        transition: all 0.3s ease-in-out;
+    }

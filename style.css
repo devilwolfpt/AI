@@ -1,0 +1,164 @@
+body {
+    background-color: #f1e8b2;
+    background-image: url("Wallpepar.png");
+    background-position: center; /* Centraliza a imagem */
+    /* background-repeat: no-repeat; Evita que a imagem se repita */
+    /* background-size: cover; Faz a imagem cobrir toda a área do corpo */
+    font-family: Arial, sans-serif;
+}
+
+.container{
+    background-color: #504f497e;
+    border: 2px #ff98dd solid;
+    border-radius: 10px;
+    border-left: 10px #ff98dd solid;
+    padding: 10px;
+    width: auto;
+    height: auto;
+}
+
+h1{
+    color: #ff98dd;
+}
+
+
+label{
+    color: #ff98dd;
+}
+
+
+
+
+
+input[type="checkbox"], input[type="radio"]{
+    accent-color: #ff98dd;
+    cursor: pointer;
+}
+
+
+
+
+h1{
+    position: sticky;
+    color: #331f19;
+    background-color: #ff98dd;
+    border-radius: 5px;
+    top: 0px;
+    text-align: center;
+    padding: 0.8rem;
+    width: auto;
+    height: auto;
+}
+
+
+input::placeholder {
+    color: #ff98dd;
+}
+
+details{
+    background-color: #ff98dd8c;
+    border-radius: 5px;
+    padding: 0.5rem;
+}
+
+summary{
+    color: #331f19;
+    margin: 0.5rem;
+    cursor: pointer;
+}
+
+ul{
+    color: #331f19;
+    margin: 0.5rem;
+}
+
+ul li{
+    padding: 0.2rem;
+}
+
+fieldset{
+    border: 2px #ff98dd solid;
+    border-radius: 5px;
+    padding: 1rem;
+}
+
+legend{
+    color: #ff98dd;
+    margin-left: 10px;
+    padding: 0 0.5rem;
+}
+
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="tel"], input[type="url"], input[type="search"], select, textarea{
+    outline: none;
+    color: #ff98dd;
+    width: 96%;
+    height: 96%;
+    padding: 0.6rem;
+    border-radius: 5px;
+    border:2px solid #ff98dd15;
+    background-color: transparent;
+}
+
+/* button, input[type="submit"], input[type="reset"]{
+    background-color: #ff98dd48;
+    border: none;
+    border-radius: 5px;
+    color: #331f19;
+    cursor: pointer;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+button:hover, input[type="submit"]:hover, input[type="reset"]:hover{
+    background-color: #ff98dd;
+    color: #331f19;
+    transition: 0.5s;
+    transform: scale(0.99);
+} */
+
+footer {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    background-color: #ff98dd57;
+    color: #000000;
+    text-align: center;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between; /* Espaça o texto e os botões */
+    align-items: center; /* Alinha verticalmente */
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.footer-content p {
+    margin: 0 1rem;
+}
+
+.menu {
+    display: flex;
+    gap: 0.5rem; /* Espaçamento entre os botões */
+}
+
+button, input[type="submit"], input[type="reset"] {
+    background-color: #ff71d0;
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+button:hover, input[type="submit"]:hover, input[type="reset"]:hover {
+    background-color: #e682ff;
+    color: #000000;
+    transition: all 0.3s ease-in-out;
+}
