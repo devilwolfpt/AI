@@ -3,34 +3,1414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My web Site</title>
-    <link rel="stylesheet" href="style_web.css">
-<center>
-        <h1>Bem-vindo ao meu site!</h1>
-    </div>
-    <center>
-</head>
-<body>
-<figure>
-        <img src="Frame 1.png" alt="Imagem de exemplo" width="100px">
-        <figcaption>Legenda</figcaption>
-</figure>
-    </div>
+    <title>Neuria - 0.1 (Preview)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a; /* Cor de fundo escura */
+            color: #e0e0e0; /* Cor de texto clara */
+            overflow: hidden; /* Prevent body scroll */
+        }
+        /* Custom scrollbar for chat log */
+        #chatLog::-webkit-scrollbar {
+            width: 8px;
+        }
+        #chatLog::-webkit-scrollbar-track {
+            background: #2a2a2a; /* Fundo mais escuro para a barra de rolagem */
+            border-radius: 10px;
+        }
+        #chatLog::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 10px;
+        }
+        #chatLog::-webkit-scrollbar-thumb:hover {
+            background: #777;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .ai-message {
+            background-color: #333333; /* Fundo mais escuro para mensagens da IA */
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 0.75rem 1rem; /* p-3 p-4 */
+            margin-bottom: 0.5rem; /* mb-2 */
+            margin-right: auto; /* Alinhar à esquerda */
+            max-width: 80%; /* Para que as mensagens não ocupem toda a largura */
+        }
+        .user-message {
+            background-color: #4a4a4a; /* Fundo ligeiramente mais claro para mensagens do utilizador */
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 0.75rem 1rem; /* p-3 p-4 */
+            margin-bottom: 0.5rem; /* mb-2 */
+            margin-left: auto; /* Alinhar à direita */
+            max-width: 80%;
+            text-align: right;
+        }
+        .dark-input {
+            background-color: #2a2a2a;
+            border-color: #444444;
+            color: #e0e0e0;
+        }
+        .dark-input::placeholder {
+            color: #999999;
+        }
+        .dark-button {
+            background-color: #444444;
+            color: #e0e0e0;
+        }
+        .dark-button:hover {
+            background-color: #555555;
+        }
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #e0e0e0;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .icon-btn:hover {
+            background-color: #333;
+        }
+        .menu-sidebar {
+            width: 70px; /* Largura fixa para a barra lateral de ícones */
+            min-height: 100vh;
+            background-color: #1a1a1a;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between; /* Para colocar as configurações no fundo */
+            border-right: 1px solid #333;
+        }
+        .main-content-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #242424; /* Fundo principal escuro */
+            border-radius: 0.75rem;
+            padding: 2rem;
+            min-height: calc(100vh - 2rem); /* Ajuste para não ter scroll horizontal */
+        }
+        .central-greeting {
+            color: #b388ff; /* Cor roxa/rosa para "Olá, devil" */
+            font-size: 3rem;
+            font-weight: 600;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .input-bar-container {
+            background-color: #333333;
+            border-radius: 2rem; /* Mais arredondado */
+            padding: 0.75rem 1.5rem; /* Ajuste do padding */
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 700px; /* Largura máxima da barra de input */
+            margin: 0 auto; /* Centralizar */
+        }
+        .input-bar-container input {
+            flex-grow: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: #e0e0e0;
+            padding: 0.5rem 0.5rem;
+            font-size: 1rem;
+        }
+        .input-bar-container input::placeholder {
+            color: #999;
+        }
+        .tool-button {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 0.9rem; /* Tamanho da fonte menor */
+            padding: 0.5rem 0.75rem;
+            border-radius: 1.5rem; /* Botões de ferramentas mais arredondados */
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .tool-button:hover {
+            background-color: #444;
+            color: #e0e0e0;
+        }
+        /* Style for microphone icon */
+        .microphone-icon {
+            font-size: 1.5rem;
+            color: #e0e0e0;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+        /* Modal dark theme */
+        #codeCanvasModal .bg-white {
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+        }
+        #codeCanvasModal h3 {
+            color: #e0e0e0;
+        }
+        #codeCanvasModal textarea {
+            background-color: #1c1c1c;
+            border-color: #444444;
+            color: #00ff00; /* Texto verde para o código */
+        }
+        #codeCanvasModal button {
+            background-color: #00aaff; /* Azul para botões do modal */
+            color: white;
+        }
+        #codeCanvasModal button:hover {
+            background-color: #0088cc;
+        }
+        #codeCanvasModal .bg-gray-100 {
+            background-color: #1c1c1c;
+            border-color: #444444;
+            color: #e0e0e0;
+        }
+        #codeCanvasModal h4 {
+            color: #e0e0e0;
+        }
 
-    <p>Este é um exemplo de parágrafo. Você pode adicionar mais conteúdo aqui.</p>
-    <p>Adicione mais informações ou links relevantes.</p>
-    <footer>
-        <div class="footer">
-            <div class="footer-content">
-                <p>&copy; 2025 Todos os direitos reservados.</p>
-                <div class="menu">
-                    <button onclick="location.href='index.html'">Home</button>
-                    <button onclick="location.href='Versões.html'">Versions</button>
-                    <button onclick="location.href='Comentarios.html'">Reportar</button>
-                </div>
+        /* Responsive adjustments for overall layout */
+        .main-container {
+            display: flex;
+            width: 100%;
+            height: 100vh; /* Ocupa a altura total da viewport */
+            overflow: hidden; /* Evita scroll desnecessário */
+        }
+        .main-content-area {
+            padding: 1rem; /* Menor padding em telas pequenas */
+        }
+        .main-content-area .chat-area {
+            flex-grow: 1; /* Permite que o chat ocupe o espaço disponível */
+            overflow-y: auto;
+            margin-bottom: 1rem; /* Espaço entre chat e input */
+            padding: 0 0.5rem; /* Pequeno padding horizontal para o chat */
+        }
+        .greeting-message {
+            margin-top: 1rem; /* Espaço acima da mensagem de boas-vindas */
+            margin-bottom: 1rem;
+            font-size: 2.5rem; /* slightly smaller on mobile */
+        }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .main-content-area {
+                padding: 2rem; /* Restore larger padding on larger screens */
+            }
+            .greeting-message {
+                font-size: 3rem; /* Larger on desktop */
+            }
+        }
+        .input-bar-container {
+            padding: 0.5rem 1rem; /* Menor padding na barra de input para telemóveis */
+            flex-wrap: wrap; /* Permite que os botões quebrem para a linha de baixo se necessário */
+            justify-content: center; /* Centraliza os itens na barra de input */
+        }
+        .input-bar-container input {
+            padding: 0.5rem;
+            font-size: 0.9rem; /* Slightly smaller font for input */
+            flex-basis: 100%; /* Ocupa toda a largura em telas pequenas */
+            margin-bottom: 0.5rem; /* Espaço abaixo do input antes dos botões */
+        }
+        .input-bar-container .flex.items-center.gap-2 {
+            flex-wrap: wrap; /* Ensure buttons wrap */
+            justify-content: center; /* Center buttons */
+            width: 100%; /* Take full width for buttons */
+        }
+        .tool-button {
+            font-size: 0.8rem; /* Smaller font for tool buttons */
+            padding: 0.4rem 0.6rem;
+        }
+        .microphone-icon {
+            font-size: 1.2rem; /* Smaller mic icon */
+        }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .input-bar-container {
+                padding: 0.75rem 1.5rem; /* Restore larger padding */
+                flex-wrap: nowrap; /* Prevent wrapping on larger screens */
+            }
+            .input-bar-container input {
+                font-size: 1rem; /* Restore font size */
+                flex-basis: auto; /* Auto width */
+                margin-bottom: 0;
+            }
+            .tool-button {
+                font-size: 0.9rem; /* Restore font size */
+                padding: 0.5rem 0.75rem;
+            }
+            .microphone-icon {
+                font-size: 1.5rem; /* Restore mic icon size */
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark-theme flex">
+
+    <div class="main-container">
+        <!-- Sidebar Esquerda -->
+        <div class="menu-sidebar">
+            <div class="flex flex-col items-center gap-6 mt-4">
+                <button id="newChatBtn" class="icon-btn">➕</button> <!-- New Chat icon -->
+                <button class="icon-btn">☰</button> <!-- Menu icon (kept for general menu functions) -->
+            </div>
+            <div class="flex flex-col items-center gap-6 mb-4">
+                <button class="icon-btn">🕒</button> <!-- History icon -->
+                <button class="icon-btn">⚙️</button> <!-- Settings icon -->
             </div>
         </div>
-    </footer>
 
+        <!-- Área de Conteúdo Principal -->
+        <div class="main-content-area">
+            <!-- Top Bar (simulated) -->
+            <div class="flex justify-between items-center w-full px-4 py-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl font-bold text-gray-300">Neuria</span>
+                    <span class="text-sm font-light text-gray-500">0.1 (Preview)</span>
+                    <svg class="h-4 w-4 text-gray-500 cursor-pointer" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </div>
+                <button id="updateBtn" class="bg-pink-700 hover:bg-pink-800 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105 text-sm">
+                    Download app
+                </button>
+            </div>
+
+            <!-- Greeting / Chat Log Area -->
+            <div class="flex-1 flex flex-col justify-center items-center text-center px-4 chat-area">
+                <h1 id="centralGreeting" class="central-greeting greeting-message">Olá, {user}</h1>
+                <div id="chatLog" class="flex-1 w-full overflow-y-auto mb-4 hidden">
+                    <!-- As mensagens do chat serão adicionadas aqui pelo JavaScript -->
+                </div>
+                <p id="userIdDisplay" class="text-xs text-gray-500 mt-4 text-center hidden">
+                    <!-- O ID do utilizador será exibido aqui pelo JavaScript -->
+                </p>
+            </div>
+
+            <!-- Input Bar at the bottom -->
+            <div class="input-bar-container">
+                <input
+                    type="text"
+                    id="userInput"
+                    placeholder="Peça ao Gemini"
+                    class="dark-input"
+                />
+                <div class="flex items-center gap-2">
+                    <button id="deepResearchBtn" class="tool-button">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12H7V8h2v4zm6-1h-2v1h2v-1zm-3-1h-2v2h2V9zM10 2a8 8 0 100 16 8 8 0 000-16zM2 10a8 8 0 0110.16-7.85l1.64-1.64a1 1 0 011.41 1.41L13.57 2.57A8 8 0 012 10zM18 10a8 8 0 00-10.16 7.85l-1.64 1.64a1 1 0 01-1.41-1.41l1.64-1.64A8 8 0 0018 10z" clip-rule="evenodd"></path></svg>
+                        Pesquisa Profunda
+                    </button>
+                    <button id="canvasBtn" class="tool-button">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6zm2 0h2v2H6V6zm4 0h2v2h-2V6z" clip-rule="evenodd"></path></svg>
+                        Canvas
+                    </button>
+                    <svg class="microphone-icon" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3.53-2.64 6.43-6 6.92V21h-2v-3.08c-3.36-.49-6-3.39-6-6.92H2c0 4.07 3.06 7.44 7 7.93V21h6v-3.07c3.94-.49 7-3.86 7-7.93h-4.7z"/></svg>
+                </div>
+            </div>
+            <!-- Hidden elements (for learning and old buttons) -->
+            <input type="hidden" id="learnInput" />
+            <button type="hidden" id="learnBtn" style="display:none;"></button>
+            <button type="hidden" id="sendBtnOld" style="display:none;"></button>
+            <button type="hidden" id="webSearchBtnOld" style="display:none;"></button>
+        </div>
+    </div>
+
+    <!-- Código do Canvas de Programação (oculto por padrão) -->
+    <div id="codeCanvasModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl transform scale-100 transition-transform duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold text-gray-800">Canvas de Programação</h3>
+                <button id="closeCanvasBtn" class="text-gray-600 hover:text-gray-900 text-3xl font-bold leading-none">
+                    &times;
+                </button>
+            </div>
+            <div class="mb-4">
+                <textarea
+                    id="codeContent"
+                    class="w-full h-48 p-4 bg-gray-900 text-green-400 font-mono rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    placeholder="// Escreve o teu código aqui&#10;// Ex: print(&quot;Olá Mundo&quot;)&#10;// Ex: soma(5, 3)"
+                ></textarea>
+            </div>
+            <button
+                id="runCodeBtn"
+                class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 mr-3"
+            >
+                Executar Código
+            </button>
+            <div class="mt-4 p-4 bg-gray-100 text-gray-800 font-mono rounded-lg border border-gray-300 min-h-24 overflow-auto">
+                <h4 class="font-semibold text-gray-700 mb-2">Saída:</h4>
+                <pre id="outputContent">Nenhuma saída ainda.</pre>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Importações do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Define o dicionário inicial massivo para a IA
+        // Isso dá à IA uma base de conhecimento forte e transições de cadeia de Markov
+        const initialAiDictionary = {
+            "olá": { associations: ["saudação", "cumprimento"], sentiment: "neutro", nextWords: { "como": 5, "tudo": 3, "o": 2, "aqui": 1, "bom": 1 } },
+            "mundo": { associations: ["planeta", "terra", "sociedade"], sentiment: "neutro", nextWords: { "é": 4, "maravilhoso": 2, "inteiro": 1, "digital": 1 } },
+            "como": { associations: ["pergunta", "modo"], sentiment: "neutro", nextWords: { "estás": 6, "posso": 5, "funciona": 3, "você": 2, "podemos": 1, "fazes": 1 } },
+            "estás": { associations: ["sentimento", "estado"], sentiment: "neutro", nextWords: { "?": 10, "hoje": 5, "a": 3, "te": 1, "você": 1 } },
+            "eu": { associations: ["pessoa", "sujeito"], sentiment: "neutro", nextWords: { "gosto": 10, "quero": 5, "sou": 8, "não": 7, "tenho": 4, "preciso": 3 } },
+            "gosto": { associations: ["preferência", "apreciação"], sentiment: "bom", nextWords: { "de": 15, "muito": 8, "bastante": 3, "sempre": 2, "disso": 1 } },
+            "de": { associations: ["preposição", "posse"], sentiment: "neutro", nextWords: { "chocolate": 5, "ler": 3, "programar": 2, "a": 10, "o": 8, "um": 6, "uma": 5, "fazer": 4 } },
+            "chocolate": { associations: ["doce", "comida", "sabor"], sentiment: "bom", type: "substantivo", nextWords: { "é": 7, "quente": 3, "bom": 6, "delicioso": 4, "e": 2, "preto": 1 } },
+            "céu": { associations: ["nuvens", "azul", "atmosfera"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 8, "está": 6, "sempre": 3, "estrelado": 2 } },
+            "azul": { associations: ["cor", "céu", "tranquilidade"], sentiment: "neutro", type: "adjetivo", nextWords: { "e": 3, "claro": 2, ".": 5, "como": 1, "profundo": 1 } },
+            "cão": { associations: ["animal", "doméstico", "fiel"], sentiment: "bom", type: "substantivo", nextWords: { "tem": 5, "é": 4, "ladra": 2, "fiel": 3, "e": 1, "brincalhão": 2 } },
+            "gato": { associations: ["animal", "doméstico", "independente"], sentiment: "bom", type: "substantivo", nextWords: { "tem": 5, "é": 4, "mia": 2, "independente": 3, "e": 1, "preguiçoso": 2 } },
+            "tem": { associations: ["verbo", "possuir"], sentiment: "neutro", nextWords: { "pelo": 5, "quatro": 3, "uma": 2, "um": 2, "muito": 1, "idéias": 2 } },
+            "pelo": { associations: ["cão", "gato", "animal", "macio"], sentiment: "neutro", type: "substantivo", nextWords: { "e": 2, "macio": 1, "curto": 1 } },
+            "dia": { associations: ["manhã", "tarde", "noite", "período"], sentiment: "neutro", type: "substantivo", nextWords: { "foi": 10, "está": 8, "de": 5, "um": 4, "lindo": 3, "bom": 2 } },
+            "incrível": { associations: ["bom", "fantástico", "maravilhoso"], sentiment: "bom", type: "adjetivo", nextWords: { ".": 5, "isso": 3, "e": 2, "como": 1, "realmente": 1 } },
+            "sol": { associations: ["quente", "brilhante", "estrela", "luz"], sentiment: "bom", type: "substantivo", nextWords: { "é": 7, "está": 5, "o": 4, "nasce": 2 } },
+            "quente": { associations: ["sol", "fogo", "temperatura"], sentiment: "neutro", type: "adjetivo", nextWords: { ".": 3, "e": 2, "muito": 1, "demais": 1 } },
+            "árvore": { associations: ["natureza", "planta", "verde"], sentiment: "neutro", type: "substantivo", nextWords: { "tem": 3, "é": 2, "grande": 1, "frutífera": 1 } },
+            "água": { associations: ["vida", "líquido", "essencial"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 4, "fria": 2, "potável": 1, "doce": 1 } },
+            "computador": { associations: ["tecnologia", "máquina", "dispositivo"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "tem": 2, "um": 1, "portátil": 1 } },
+            "programa": { associations: ["código", "aplicação", "software"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 2, "de": 1, "para": 1, "informático": 1 } },
+            "felicidade": { associations: ["alegria", "bem-estar", "satisfação"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "plena": 1 } },
+            "tristeza": { associations: ["dor", "sentimento", "melancolia"], sentiment: "mau", type: "substantivo", nextWords: { "é": 3, "profunda": 1, "grande": 1 } },
+            "livro": { associations: ["leitura", "conhecimento", "história"], sentiment: "bom", type: "substantivo", nextWords: { "é": 2, "de": 1, "um": 1, "interessante": 1 } },
+            "aprender": { associations: ["conhecer", "estudar", "evoluir"], sentiment: "neutro", type: "verbo", nextWords: { "é": 3, "sempre": 1, "muito": 1 } },
+            "ensinar": { associations: ["transmitir", "educar", "instruir"], sentiment: "neutro", type: "verbo", nextWords: { "é": 3, "a": 1, "como": 1 } },
+            "amor": { associations: ["sentimento", "paixão", "carinho"], sentiment: "bom", type: "substantivo", nextWords: { "é": 5, "verdadeiro": 2, "incondicional": 1 } },
+            "ódio": { associations: ["sentimento", "raiva", "aversão"], sentiment: "mau", type: "substantivo", nextWords: { "é": 5, "cega": 2, "profundo": 1 } },
+            "amigo": { associations: ["companheiro", "pessoa", "leal"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "leal": 1, "verdadeiro": 1 } },
+            "inimigo": { associations: ["adversário", "pessoa", "oponente"], sentiment: "mau", type: "substantivo", nextWords: { "é": 3, "oculto": 1, "perigoso": 1 } },
+            "música": { associations: ["som", "arte", "harmonia"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "boa": 2, "uma": 1, "clássica": 1 } },
+            "arte": { associations: ["criatividade", "beleza", "expressão"], sentiment: "bom", type: "substantivo", nextWords: { "é": 2, "uma": 1, "visual": 1 } },
+            "ciência": { associations: ["conhecimento", "investigação", "descoberta"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "da": 1, "pura": 1 } },
+            "história": { associations: ["passado", "eventos", "narrativa"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "da": 1, "antiga": 1 } },
+            "planeta": { associations: ["terra", "espaço", "corpo celeste"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 2, "terra": 1, "vermelho": 1 } },
+            "estrela": { associations: ["sol", "espaço", "luz"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 2, "uma": 1, "cadente": 1 } },
+            "tecnologia": { associations: ["inovação", "futuro", "desenvolvimento"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 2, "moderna": 1 } },
+            "futuro": { associations: ["amanhã", "progresso", "porvir"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 2, "o": 1, "incerto": 1 } },
+            "passado": { associations: ["memória", "história", "ontem"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 2, "o": 1, "distante": 1 } },
+            "memória": { associations: ["lembrança", "passado", "recordação"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 2, "boa": 1, "curta": 1 } },
+            "casa": { associations: ["lar", "abrigo", "residência"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "um": 1, "grande": 1 } },
+            "escola": { associations: ["educação", "aprendizagem", "instituição"], sentiment: "neutro", type: "substantivo", nextWords: { "é": "3", "a": 1, "primária": 1 } },
+            "trabalho": { associations: ["profissão", "emprego", "ocupação"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "duro": 1, "novo": 1 } },
+            "viagem": { associations: ["aventura", "descoberta", "expedição"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "uma": 1, "longa": 1 } },
+            "livre": { associations: ["independente", "sem restrições", "autónomo"], sentiment: "bom", type: "adjetivo", nextWords: { "e": 2, "ser": 1, "arbítrio": 1 } },
+            "bonito": { associations: ["belo", "atraente", "formoso"], sentiment: "bom", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "realmente": 1 } },
+            "feio": { associations: ["desagradável", "repelente", "horrível"], sentiment: "mau", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "mesmo": 1 } },
+            "grande": { associations: ["enorme", "imenso", "vastidão"], sentiment: "neutro", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "demais": 1 } },
+            "pequeno": { associations: ["minúsculo", "diminuto", "reduzido"], sentiment: "neutro", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "demais": 1 } },
+            "rápido": { associations: ["veloz", "ligeiro", "acelerado"], sentiment: "neutro", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "dá": 1 } },
+            "lento": { associations: ["devagar", "tardio", "arrastado"], sentiment: "neutro", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "dá": 1 } },
+            "limpo": { associations: ["puro", "asseado", "imaculado"], sentiment: "bom", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "fresco": 1 } },
+            "sujo": { associations: ["impuro", "desasseado", "imundo"], sentiment: "mau", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "está": 1 } },
+            "verdade": { associations: ["facto", "realidade", "sinceridade"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "a": 1, "absoluta": 1 } },
+            "mentira": { associations: ["engano", "falsidade", "fraude"], sentiment: "mau", type: "substantivo", nextWords: { "é": 3, "uma": 1, "pura": 1 } },
+            "paz": { associations: ["tranquilidade", "harmonia", "calma"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "a": 1, "mundial": 1 } },
+            "guerra": { associations: ["conflito", "violência", "batalha"], sentiment: "mau", type: "substantivo", nextWords: { "é": 3, "a": 1, "civil": 1 } },
+            "doença": { associations: ["enfermidade", "saúde", "enfermidade"], sentiment: "mau", type: "substantivo", nextWords: { "é": 3, "uma": 1, "grave": 1 } },
+            "saúde": { associations: ["bem-estar", "vitalidade", "vigor"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "a": 1, "física": 1 } },
+            "comida": { associations: ["nutrição", "alimento", "refeição"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "boa": 1, "saborosa": 1 } },
+            "bebida": { associations: ["refresco", "líquido", "néctar"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "boa": 1, "quente": 1 } },
+            "desporto": { associations: ["exercício", "atividade", "competição"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "um": 1, "radical": 1 } },
+            "natureza": { associations: ["ambiente", "mundo natural", "flora"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "a": 1, "selvagem": 1 } },
+            "cidade": { associations: ["urbano", "edifícios", "metrópole"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "uma": 1, "grande": 1 } },
+            "campo": { associations: ["rural", "natureza", "aldeia"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "o": 1, "verde": 1 } },
+            "carro": { associations: ["veículo", "transporte", "automóvel"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "um": 1, "elétrico": 1 } },
+            "avião": { associations: ["aeronave", "voo", "aéreo"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "um": 1, "rápido": 1 } },
+            "mar": { associations: ["oceano", "água", "costa"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "o": 1, "calmo": 1 } },
+            "montanha": { associations: ["serra", "elevação", "pico"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "uma": 1, "alta": 1 } },
+            "floresta": { associations: ["árvores", "natureza", "bosque"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "uma": 1, "densa": 1 } },
+            "praia": { associations: ["areia", "mar", "sol"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "a": 1, "bonita": 1 } },
+            "chuva": { associations: ["água", "tempo", "precipitação"], sentiment: "mau", type: "substantivo", nextWords: { "é": 3, "a": 1, "forte": 1 } },
+            "verão": { associations: ["sol", "calor", "férias"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "o": 1, "quente": 1 } },
+            "inverno": { associations: ["frio", "neve", "geada"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "o": 1, "rigoroso": 1 } },
+            "primavera": { associations: ["flores", "renovação", "vida"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "a": 1, "colorida": 1 } },
+            "outono": { associations: ["folhas", "cores", "brisa"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "o": 1, "fresco": 1 } },
+            "matemática": { associations: ["números", "cálculo", "álgebra"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "a": 1, "complexa": 1 } },
+            "física": { associations: ["ciência", "leis naturais", "universo"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "a": 1, "quântica": 1 } },
+            "química": { associations: ["elementos", "reações", "laboratório"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "a": 1, "orgânica": 1 } },
+            "biologia": { associations: ["vida", "organismos", "ecossistema"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "a": 1, "marinha": 1 } },
+            "geografia": { associations: ["países", "mapas", "continentes"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "a": 1, "humana": 1 } },
+            "economia": { associations: ["dinheiro", "mercado", "finanças"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "a": 1, "mundial": 1 } },
+            "política": { associations: ["governo", "sociedade", "democracia"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "a": 1, "internacional": 1 } },
+            "filosofia": { associations: ["pensamento", "conhecimento", "existência"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "a": 1, "grega": 1 } },
+            "computação": { associations: ["programação", "algoritmos", "dados"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "a": 1, "quântica": 1 } },
+            "algoritmo": { associations: ["instruções", "código", "lógica"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "um": 1, "complexo": 1 } },
+            "dados": { associations: ["informação", "base de dados", "análise"], sentiment: "neutro", type: "substantivo", nextWords: { "são": 3, "e": 1, "grandes": 1 } },
+            "informação": { associations: ["dados", "conhecimento", "notícias"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "útil": 1 } },
+            "conhecimento": { associations: ["informação", "sabedoria", "aprendizagem"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "profundo": 1 } },
+            "sabedoria": { associations: ["conhecimento", "experiência", "discernimento"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "antiga": 1 } },
+            "inteligente": { associations: ["sabedoria", "raciocínio", "esperto"], sentiment: "bom", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "artificial": 1 } },
+            "burro": { associations: ["ignorante", "pouco inteligente", "tolo"], sentiment: "mau", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "não": 1 } },
+            "digital": { associations: ["tecnologia", "internet", "online"], sentiment: "neutro", type: "adjetivo", nextWords: { "e": 2, "o": 1, "mundo": 1 } },
+            "analógico": { associations: ["tradicional", "físico", "clássico"], sentiment: "neutro", type: "adjetivo", nextWords: { "e": 2, "o": 1, "relógio": 1 } },
+            "criativo": { associations: ["inovador", "original", "inspirado"], sentiment: "bom", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "mente": 1 } },
+            "destrutivo": { associations: ["prejudicial", "negativo", "danoso"], sentiment: "mau", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "comportamento": 1 } },
+            "positivo": { associations: ["bom", "construtivo", "otimista"], sentiment: "bom", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "pensamento": 1 } },
+            "negativo": { associations: ["mau", "destrutivo", "pessimista"], sentiment: "mau", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "sentimento": 1 } },
+            "raciocínio": { associations: ["lógica", "pensamento", "dedução"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "lógico": 1 } },
+            "pesquisa": { associations: ["informação", "descoberta", "investigação"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "científica": 1 } },
+            "programar": { associations: ["código", "criar", "desenvolver"], sentiment: "neutro", type: "verbo", nextWords: { "é": 3, "em": 1, "para": 1 } },
+            "canvas": { associations: ["programação", "desenho", "plataforma"], sentiment: "neutro", type: "substantivo", nextWords: { "de": 3, "do": 1, "gráfico": 1 } },
+            "comunicação": { associations: ["diálogo", "interação", "troca"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "eficaz": 1 } },
+            "diálogo": { associations: ["conversa", "comunicação", "debate"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "aberto": 1 } },
+            "interação": { associations: ["diálogo", "comunicação", "conexão"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "social": 1 } },
+            "evolução": { associations: ["desenvolvimento", "progresso", "transformação"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "constante": 1 } },
+            "progresso": { associations: ["evolução", "melhoria", "avanço"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "tecnológico": 1 } },
+            "aprendizagem": { associations: ["conhecimento", "estudo", "educação"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "contínua": 1 } },
+            "robot": { associations: ["máquina", "automação", "robótica"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "um": 1, "inteligente": 1 } },
+            "automatização": { associations: ["eficiência", "robot", "otimização"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "industrial": 1 } },
+            "redes sociais": { associations: ["internet", "comunicação", "plataforma"], sentiment: "neutro", relatedConcepts: ["privacidade", "informação", "conexão"], nextWords: { "são": 3, "e": 1, "úteis": 1 } },
+            "privacidade": { associations: ["segurança", "informação", "confidencialidade"], sentiment: "neutro", nextWords: { "é": 3, "e": 1, "importante": 1 } },
+            "segurança": { associations: ["proteção", "privacidade", "defesa"], sentiment: "neutro", nextWords: { "é": 3, "e": 1, "cibernética": 1 } },
+            "educação": { associations: ["aprendizagem", "conhecimento", "ensino"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "de qualidade": 1 } },
+            "saúde mental": { associations: ["bem-estar", "psicologia", "equilíbrio"], sentiment: "bom", relatedConcepts: ["felicidade", "equilíbrio", "terapia"], nextWords: { "é": 3, "e": 1, "crucial": 1 } },
+            "psicologia": { associations: ["mente", "comportamento", "estudo"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "humana": 1 } },
+            "ambiente": { associations: ["natureza", "ecologia", "meio"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "o": 1, "natural": 1 } },
+            "ecologia": { associations: ["ambiente", "biologia", "sustentabilidade"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "a": 1, "profunda": 1 } },
+            "sustentabilidade": { associations: ["ambiente", "futuro", "ecologia"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "essencial": 1 } },
+            "energia renovável": { associations: ["solar", "eólica", "limpa"], sentiment: "bom", relatedConcepts: ["sustentabilidade", "ambiente", "futuro"], nextWords: { "é": 3, "e": 1, "verde": 1 } },
+            "economia circular": { associations: ["reciclagem", "reutilização", "sustentabilidade"], sentiment: "bom", relatedConcepts: ["sustentabilidade", "ambiente", "inovação"], nextWords: { "é": 3, "e": 1, "moderna": 1 } },
+            "inovação": { associations: ["criatividade", "tecnologia", "novidade"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "constante": 1 } },
+            "desafios": { associations: ["problemas", "obstáculos", "testes"], sentiment: "mau", relatedConcepts: ["soluções", "superação"], nextWords: { "são": 3, "e": 1, "grandes": 1 } },
+            "soluções": { associations: ["respostas", "oportunidades", "alternativas"], sentiment: "bom", relatedConcepts: ["problemas", "inovação"], nextWords: { "são": 3, "e": 1, "criativas": 1 } },
+            "complexidade": { associations: ["dificuldade", "intrincado", "elaborado"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "natural": 1 } },
+            "simplicidade": { associations: ["facilidade", "clareza", "descomplicação"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "elegante": 1 } },
+            "futuro da ia": { associations: ["desenvolvimento", "inovação", "impacto"], sentiment: "bom", relatedConcepts: ["ética", "automação", "progresso"], nextWords: { "é": 3, "e": 1, "promissor": 1 } },
+            "ética": { associations: ["moral", "valores", "princípios"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "fundamental": 1 } },
+            "realidade aumentada": { associations: ["tecnologia", "interação", "imersão"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "o futuro": 1 } },
+            "criptografia": { associations: ["segurança", "dados", "codificação"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "complexa": 1 } },
+            "big data": { associations: ["informação", "análise", "volume"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "essencial": 1 } },
+            "computação quântica": { associations: ["futuro", "tecnologia", "avanço"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "revolucionária": 1 } },
+            "neurociência": { associations: ["cérebro", "biologia", "mente"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "complexa": 1 } },
+            "biotecnologia": { associations: ["ciência", "vida", "inovação"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "promissora": 1 } },
+            "exploração espacial": { associations: ["universo", "descoberta", "viagem"], sentiment: "bom", relatedConcepts: ["estrelas", "planetas", "futuro"], nextWords: { "é": 3, "e": 1, "fascinante": 1 } },
+            "colonização de marte": { associations: ["futuro", "exploração espacial", "assentamento"], sentiment: "neutro", relatedConcepts: ["terra", "desafios"], nextWords: { "é": 3, "e": 1, "possível": 1 } },
+            "veículos autónomos": { associations: ["carros", "tecnologia", "condução"], sentiment: "neutro", relatedConcepts: ["segurança", "futuro", "transporte"], nextWords: { "são": 3, "e": 1, "inteligentes": 1 } },
+            "internet das coisas": { associations: ["conectividade", "tecnologia", "dispositivos"], sentiment: "neutro", relatedConcepts: ["casa inteligente", "segurança", "automatização"], nextWords: { "é": 3, "e": 1, "expansão": 1 } },
+            "cibersegurança": { associations: ["proteção", "dados", "internet"], sentiment: "neutro", relatedConcepts: ["privacidade", "segurança", "ameaças"], nextWords: { "é": 3, "e": 1, "vital": 1 } },
+            "aprendizagem máquina": { associations: ["inteligência artificial", "algoritmos", "dados"], sentiment: "neutro", relatedConcepts: ["dados", "redes neuronais", "treinamento"], nextWords: { "é": 3, "e": 1, "poderosa": 1 } },
+            "redes neuronais": { associations: ["inteligência artificial", "algoritmos", "cérebro"], sentiment: "neutro", relatedConcepts: ["aprendizagem máquina", "conexões", "treinamento"], nextWords: { "são": 3, "e": 1, "complexas": 1 } },
+            "processamento de linguagem natural": { associations: ["ia", "texto", "linguagem"], sentiment: "neutro", relatedConcepts: ["comunicação", "compreensão", "análise"], nextWords: { "é": 3, "e": 1, "essencial": 1 } },
+            "visão computacional": { associations: ["ia", "imagens", "análise"], sentiment: "neutro", relatedConcepts: ["reconhecimento", "padrões", "dados"], nextWords: { "é": 3, "e": 1, "avançada": 1 } },
+            "computação em nuvem": { associations: ["dados", "serviços", "armazenamento"], sentiment: "neutro", relatedConcepts: ["internet", "segurança", "escalabilidade"], nextWords: { "é": 3, "e": 1, "flexível": 1 } },
+            "blockchain": { associations: ["criptomoeda", "segurança", "transações"], sentiment: "neutro", relatedConcepts: ["descentralização", "confiança", "tecnologia"], nextWords: { "é": 3, "e": 1, "inovadora": 1 } },
+            "metaverso": { associations: ["realidade virtual", "realidade aumentada", "mundo virtual"], sentiment: "neutro", relatedConcepts: ["futuro", "interação", "imersão"], nextWords: { "é": 3, "e": 1, "promissor": 1 } },
+            "robotização": { associations: ["automação", "indústria", "eficiência"], sentiment: "neutro", relatedConcepts: ["empregos", "produtividade", "transformação"], nextWords: { "é": 3, "e": 1, "crescente": 1 } },
+            "nanotecnologia": { associations: ["miniatura", "ciência", "escala"], sentiment: "neutro", relatedConcepts: ["medicina", "engenharia", "futuro"], nextWords: { "é": 3, "e": 1, "inovadora": 1 } },
+            "engenharia genética": { associations: ["biologia", "modificação", "dna"], sentiment: "neutro", relatedConcepts: ["ética", "saúde", "futuro"], nextWords: { "é": 3, "e": 1, "controversa": 1 } },
+            "exploração oceânica": { associations: ["mar", "descoberta", "vida marinha"], sentiment: "neutro", relatedConcepts: ["vida marinha", "biodiversidade", "mistérios"], nextWords: { "é": 3, "e": 1, "desafiadora": 1 } },
+            "astronomia": { associations: ["estrelas", "planetas", "universo"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "fascinante": 1 } },
+            "geologia": { associations: ["terra", "rochas", "terremotos"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "interessante": 1 } },
+            "arqueologia": { associations: ["passado", "história", "descobertas"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "emocionante": 1 } },
+            "antropologia": { associations: ["humanidade", "cultura", "sociedade"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "cultural": 1 } },
+            "sociologia": { associations: ["sociedade", "comportamento", "interação"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "moderna": 1 } },
+            "economia global": { associations: ["comércio", "mercado", "finanças"], sentiment: "neutro", relatedConcepts: ["países", "desenvolvimento", "crise"], nextWords: { "é": 3, "e": 1, "complexa": 1 } },
+            "justiça": { associations: ["lei", "equidade", "direito"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "social": 1 } },
+            "liberdade": { associations: ["autonomia", "direitos", "independência"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "individual": 1 } },
+            "responsabilidade": { associations: ["dever", "ética", "compromisso"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "social": 1 } },
+            "criatividade": { associations: ["inovação", "arte", "imaginação"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "pura": 1 } },
+            "inspiração": { associations: ["ideia", "motivação", "estímulo"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "divina": 1 } },
+            "motivação": { associations: ["inspiração", "desejo", "impulsão"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "interna": 1 } },
+            "desejo": { associations: ["vontade", "paixão", "aspiração"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "profundo": 1 } },
+            "paz mundial": { associations: ["harmonia", "coexistência", "união"], sentiment: "bom", relatedConcepts: ["guerra", "cooperação", "futuro"], nextWords: { "é": 3, "e": 1, "utopia": 1 } },
+            "diversidade": { associations: ["variedade", "inclusão", "pluralidade"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "cultural": 1 } },
+            "inclusão": { associations: ["diversidade", "aceitação", "integração"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "social": 1 } },
+            "tolerância": { associations: ["respeito", "aceitação", "paciência"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "chave": 1 } },
+            "respeito": { associations: ["consideração", "tolerância", "estima"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "mútuo": 1 } },
+            "empatia": { associations: ["compreensão", "sentimento", "conexão"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "humana": 1 } },
+            "cooperação": { associations: ["colaboração", "trabalho em equipa", "ajuda"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "essencial": 1 } },
+            "colaboração": { associations: ["cooperação", "parceria", "sinergia"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "produtiva": 1 } },
+            "desenvolvimento pessoal": { associations: ["crescimento", "melhoria", "autoconhecimento"], sentiment: "bom", relatedConcepts: ["aprendizagem", "metas", "evolução"], nextWords: { "é": 3, "e": 1, "contínuo": 1 } },
+            "autocuidado": { associations: ["bem-estar", "saúde", "autoestima"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "importante": 1 } },
+            "meditação": { associations: ["relaxamento", "foco", "calma"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "diária": 1 } },
+            "yoga": { associations: ["exercício", "bem-estar", "flexibilidade"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "benefício": 1 } },
+            "nutrição": { associations: ["saúde", "comida", "alimentação"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "adequada": 1 } },
+            "exercício": { associations: ["saúde", "atividade física", "treino"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "regular": 1 } },
+            "sono": { associations: ["descanso", "energia", "repouso"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "reparador": 1 } },
+            "stress": { associations: ["pressão", "ansiedade", "tensão"], sentiment: "mau", type: "substantivo", nextWords: { "é": 3, "e": 1, "elevado": 1 } },
+            "ansiedade": { associations: ["stress", "preocupação", "medo"], sentiment: "mau", type: "substantivo", nextWords: { "é": 3, "e": 1, "constante": 1 } },
+            "depressão": { associations: ["tristeza", "doença mental", "desânimo"], sentiment: "mau", type: "substantivo", nextWords: { "é": 3, "e": 1, "grave": 1 } },
+            "otimismo": { associations: ["esperança", "positividade", "confiança"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "fundamental": 1 } },
+            "pessimismo": { associations: ["desespero", "negatividade", "descrença"], sentiment: "mau", type: "adjetivo", nextWords: { "e": 2, "muito": 1, "extremo": 1 } },
+            "resiliência": { associations: ["força", "superação", "adaptação"], sentiment: "bom", type: "substantivo", nextWords: { "é": 3, "e": 1, "chave": 1 } },
+            "propósito": { associations: ["objetivo", "sentido", "missão"], sentiment: "neutro", type: "substantivo", nextWords: { "é": 3, "e": 1, "claro": 1 } },
+            "sentido da vida": { associations: ["propósito", "existência", "significado"], sentiment: "neutro", relatedConcepts: ["filosofia", "busca", "verdade"], nextWords: { "é": 3, "e": 1, "profundo": 1 } },
+            "felicidade duradoura": { associations: ["bem-estar", "satisfação", "alegria"], sentiment: "bom", relatedConcepts: ["sentimento", "longo prazo", "equilíbrio"], nextWords: { "é": 3, "e": 1, "possível": 1 } },
+            // Further common words for better Markov chain generation - more Portuguese specific
+            "da": { nextWords: { "vida": 5, "cidade": 4, "minha": 3, "terra": 2, "escola": 1, "história": 2, "tecnologia": 3 } },
+            "do": { nextWords: { "mundo": 5, "sol": 4, "céu": 3, "meu": 2, "mar": 1, "futuro": 3, "tempo": 2 } },
+            "no": { nextWords: { "mundo": 5, "céu": 4, "dia": 3, "entanto": 2, "meu": 1, "fundo": 1, "contexto": 2 } },
+            "na": { nextWords: { "terra": 5, "cidade": 4, "minha": 3, "escola": 2, "água": 1, "verdade": 2, "rede": 3 } },
+            "dos": { nextWords: { "cães": 3, "gatos": 2, "animais": 1, "dados": 2, "tempos": 1 } },
+            "das": { nextWords: { "coisas": 3, "pessoas": 2, "cidades": 1, "redes": 2, "soluções": 1 } },
+            "aos": { nextWords: { "outros": 2, "alunos": 1, "poucos": 1 } },
+            "às": { nextWords: { "vezes": 2, "pessoas": 1, "novas": 1 } },
+            "porém": { nextWords: { "é": 2, "não": 1, "existe": 1 } },
+            "contudo": { nextWords: { "é": 2, "não": 1, "vale": 1 } },
+            "portanto": { nextWords: { "é": 2, "podemos": 1, "devemos": 1 } },
+            "assim": { nextWords: { "sendo": 2, "é": 1, "como": 1 } },
+            "além": { nextWords: { "disso": 2, "de": 1, "do": 1 } },
+            "ainda": { nextWords: { "não": 3, "é": 2, "estou": 1, "assim": 1 } },
+            "sempre": { nextWords: { "estou": 3, "é": 2, "será": 1, "a aprender": 2 } },
+            "nunca": { nextWords: { "é": 2, "foi": 1, "desisto": 1 } },
+            "muito": { nextWords: { "bem": 5, "difícil": 4, "feliz": 3, "triste": 2, "interessante": 1, "rápido": 2, "importante": 3 } },
+            "bem": { nextWords: { "obrigado": 5, "e": 3, "sim": 2, "feito": 1 } },
+            "mal": { nextWords: { "obrigado": 5, "e": 3, "não": 2, "sinto": 1 } },
+            "claro": { nextWords: { "que": 5, ".": 3, "entendido": 2 } },
+            "talvez": { nextWords: { "sim": 3, "não": 2, ".": 1, "seja": 1 } },
+            "sim": { nextWords: { ".": 10, "obrigado": 5, "e": 3, "entendi": 2 } },
+            "não": { nextWords: { ".": 10, "sei": 5, "obrigado": 3, "entendi": 2 } },
+            "pois": { nextWords: { "é": 5, "bem": 3, "claro": 2 } },
+            "ora": { nextWords: { "bem": 3, "vamos": 2, "veja": 1 } },
+            "então": { nextWords: { "o": 5, "a": 4, "e": 3, "sim": 2, "assim": 1 } },
+            "diga": { nextWords: { "me": 5, "o": 3, "mais": 2 } },
+            "fala": { nextWords: { "me": 5, "sobre": 3, "agora": 1 } },
+            "ok": { nextWords: { ".": 10, "obrigado": 5, "compreendi": 2 } },
+            "certo": { nextWords: { ".": 10, "e": 5, "entendido": 2 } },
+            "vamos": { nextWords: { "lá": 5, "fazer": 3, "ver": 2, "continuar": 1 } },
+            "entendido": { nextWords: { ".": 10, "obrigado": 5, "perfeitamente": 2 } },
+            "o que": { associations: ["pergunta"], sentiment: "neutro", nextWords: { "é": 10, "são": 5, "significa": 3 } },
+            "quem é": { associations: ["pergunta"], sentiment: "neutro", nextWords: { "o": 5, "a": 3 } },
+            "porquê": { associations: ["pergunta", "razão"], sentiment: "neutro", nextWords: { "é": 5, "isso": 3, "acontece": 2 } },
+            "onde": { associations: ["pergunta", "local"], sentiment: "neutro", nextWords: { "é": 5, "está": 3, "fica": 2 } },
+            "quando": { associations: ["pergunta", "tempo"], sentiment: "neutro", nextWords: { "é": 5, "acontece": 3 } },
+            "qual": { associations: ["pergunta", "escolha"], sentiment: "neutro", nextWords: { "é": 5, "o": 3, "a": 2 } },
+            "como funciona": { associations: ["pergunta", "explicação"], sentiment: "neutro", nextWords: { "o": 5, "isso": 3 } },
+            "escreve": { associations: ["criação", "texto"], sentiment: "neutro", type: "verbo", nextWords: { "um": 5, "uma": 3, "sobre": 2 } },
+            "cria": { associations: ["gerar", "desenvolver"], sentiment: "neutro", type: "verbo", nextWords: { "um": 5, "uma": 3, "algo": 2 } },
+            "gera": { associations: ["produzir", "criar"], sentiment: "neutro", type: "verbo", nextWords: { "um": 5, "uma": 3, "texto": 2 } },
+            "dá-me uma ideia": { associations: ["sugestão", "ajuda"], sentiment: "neutro", nextWords: { "sobre": 5, "para": 3 } },
+            "o que achas de": { associations: ["opinião", "perspectiva"], sentiment: "neutro", nextWords: { "isso": 5, "essa": 3 } },
+            "opinião sobre": { associations: ["ponto de vista", "análise"], sentiment: "neutro", nextWords: { "o": 5, "a": 3 } },
+            "qual é o melhor": { associations: ["comparação", "recomendação"], sentiment: "neutro", nextWords: { "para": 5, "entre": 3 } },
+            "imita": { associations: ["simulação", "reprodução"], sentiment: "neutro", type: "verbo", nextWords: { "um": 5, "a": 3 } },
+            "compara e contrasta": { associations: ["análise", "diferenças"], sentiment: "neutro", nextWords: { "X": 5, "entre": 3 } },
+            "perspectivas sobre": { associations: ["pontos de vista", "análise"], sentiment: "neutro", nextWords: { "o": 5, "a": 3 } },
+            "analisa": { associations: ["estudo", "exame"], sentiment: "neutro", type: "verbo", nextWords: { "o": 5, "a": 3 } },
+            "explica em detalhe": { associations: ["compreensão", "aprofundar"], sentiment: "neutro", nextWords: { "o": 5, "a": 3 } },
+            "diz-me sobre": { associations: ["informação", "conhecimento"], sentiment: "neutro", nextWords: { "o": 5, "a": 3 } },
+            "narra": { associations: ["contar", "descrever"], sentiment: "neutro", type: "verbo", nextWords: { "uma": 5, "a": 3 } },
+            "descreve": { associations: ["detalhar", "apresentar"], sentiment: "neutro", type: "verbo", nextWords: { "o": 5, "a": 3 } },
+            "inventa": { associations: ["criar", "imaginar"], sentiment: "neutro", type: "verbo", nextWords: { "uma": 5, "algo": 3 } },
+            "imagina": { associations: ["visualizar", "pensar"], sentiment: "neutro", type: "verbo", nextWords: { "que": 5, "se": 3 } },
+            "explica-me": { associations: ["informação", "compreensão"], sentiment: "neutro", nextWords: { "sobre": 5, "o": 3 } },
+            "ajuda-me": { associations: ["suporte", "assistência"], sentiment: "neutro", nextWords: { "a": 5, "com": 3 } },
+            "aconselha-me": { associations: ["orientação", "sugestão"], sentiment: "neutro", nextWords: { "sobre": 5, "em": 3 } },
+            "dicas": { associations: ["sugestões", "conselhos"], sentiment: "neutro", nextWords: { "para": 5, "sobre": 3 } },
+            "benefícios": { associations: ["vantagens", "aspetos positivos"], sentiment: "bom", nextWords: { "de": 5, "do": 3 } },
+            "desvantagens": { associations: ["problemas", "aspetos negativos"], sentiment: "mau", nextWords: { "de": 5, "do": 3 } },
+            "impacto": { associations: ["efeito", "consequência"], sentiment: "neutro", nextWords: { "na": 5, "do": 3 } },
+            "tendências": { associations: ["direções", "evolução"], sentiment: "neutro", nextWords: { "futuras": 5, "atuais": 3 } },
+            "histórico": { associations: ["passado", "cronologia"], sentiment: "neutro", nextWords: { "de": 5, "sobre": 3 } },
+            "curiosidades": { associations: ["factos interessantes", "informação"], sentiment: "neutro", nextWords: { "sobre": 5, "e": 3 } },
+            "exemplos": { associations: ["ilustrações", "casos"], sentiment: "neutro", nextWords: { "de": 5, "para": 3 } },
+            "métodos": { associations: ["formas", "abordagens"], sentiment: "neutro", nextWords: { "de": 5, "para": 3 } },
+            "teorias": { associations: ["hipóteses", "conceitos"], sentiment: "neutro", nextWords: { "sobre": 5, "da": 3 } },
+            "aplicações": { associations: ["usos", "funcionalidades"], sentiment: "neutro", nextWords: { "de": 5, "para": 3 } },
+            "descobertas": { associations: ["revelações", "invenções"], sentiment: "bom", nextWords: { "recentes": 5, "importantes": 3 } },
+            "desenvolvimento": { associations: ["progresso", "evolução"], sentiment: "neutro", nextWords: { "de": 5, "e": 3 } },
+            "futuras": { associations: ["próximas", "vindouras"], sentiment: "neutro", nextWords: { "tendências": 5, "inovações": 3 } },
+            "recentes": { associations: ["novas", "atuais"], sentiment: "neutro", nextWords: { "descobertas": 5, "notícias": 3 } },
+        };
+
+
+        // Mapa de emojis baseado no tipo de resposta ou sentimento
+        const emojiMap = {
+            'bom': '😊✨💖',
+            'mau': '😟😔💔',
+            'pergunta': '🤔❓💡',
+            'facto': '💡📚✅',
+            'programar': '💻🚀✨',
+            'compara': '⚖️📊↔️',
+            'raciocínio': '🧠✨🧐',
+            'default': '🤖💬🌟',
+            'surpresa': '😲🤯🤩',
+            'concorda': '👍✅💯',
+            'discorda': '👎❌🚫',
+            'alegria': '😄🥳🎉',
+            'tristeza': '😢�😔',
+            'entendimento': '💡✨🎯',
+            'elogio': '🌟🏆👏',
+            'explicação': '📖🔍💬',
+            'conselho': '🤝💡✨',
+            'criatividade': '🎨✍️✨',
+            'futuro': '🔮⏳🚀',
+            'passado': '🕰️📜🏛️',
+            'natureza': '🌳🌸🌍',
+            'tecnologia': '💡🔌📡',
+            'solução': '✅🛠️✨',
+            'problema': '⚠️❌❓',
+            'curiosidade': '💡😮🌟',
+        };
+
+        // --- Variáveis Globais ---
+        let db;
+        let auth;
+        let userId = null;
+        let aiDictionary = {};
+        let isThinking = false;
+        let showCodeCanvas = false;
+        let isWebSearchRequested = false; // Estado para pesquisa web explícita (botão)
+        let isChatVisible = false; // Estado para controlar a visibilidade do chat log
+
+        // --- Elementos DOM ---
+        const chatLogElem = document.getElementById('chatLog');
+        const userInputElem = document.getElementById('userInput');
+        const deepResearchBtn = document.getElementById('deepResearchBtn');
+        const canvasBtn = document.getElementById('canvasBtn');
+        const centralGreetingElem = document.getElementById('centralGreeting');
+        const learnInputElem = document.getElementById('learnInput'); // Still hidden but exists
+        const learnBtn = document.getElementById('learnBtn'); // Still hidden but exists
+        const userIdDisplayElem = document.getElementById('userIdDisplay');
+        const codeCanvasModal = document.getElementById('codeCanvasModal');
+        const closeCanvasBtn = document.getElementById('closeCanvasBtn');
+        const codeContentElem = document.getElementById('codeContent');
+        const runCodeBtn = document.getElementById('runCodeBtn');
+        const outputContentElem = document.getElementById('outputContent');
+        const newChatBtn = document.getElementById('newChatBtn'); // New chat button
+
+        // --- Funções Utilitárias ---
+
+        /**
+         * Adiciona uma mensagem ao registo de chat.
+         * @param {string} sender - 'IA' ou 'Utilizador'.
+         * @param {string} message - O conteúdo da mensagem.
+         */
+        const addMessageToChatLog = (sender, message) => {
+            if (!isChatVisible) {
+                centralGreetingElem.classList.add('hidden');
+                chatLogElem.classList.remove('hidden');
+                userIdDisplayElem.classList.remove('hidden');
+                isChatVisible = true;
+            }
+            const div = document.createElement('div'); // Use div for better styling
+            div.classList.add('mb-2', 'rounded-xl', 'p-3'); // Common styling
+            if (sender === 'Utilizador') {
+                div.classList.add('user-message');
+            } else {
+                div.classList.add('ai-message');
+            }
+            div.innerHTML = `${message}`; // No sender text in message, use classes for alignment
+            chatLogElem.appendChild(div);
+            chatLogElem.scrollTop = chatLogElem.scrollHeight;
+        };
+
+
+        /**
+         * Mostra/oculta o indicador de "A pensar".
+         * @param {boolean} thinking - Verdadeiro para mostrar, falso para ocultar.
+         */
+        const showThinkingIndicator = (thinking) => {
+            if (thinking) {
+                const p = document.createElement('p');
+                p.id = 'thinkingIndicator';
+                p.classList.add('mb-2', 'text-gray-500', 'italic', 'text-center', 'animate-pulse');
+                p.textContent = 'IA: A processar com a minha inteligência mais profunda... 🧠✨';
+                chatLogElem.appendChild(p);
+                chatLogElem.scrollTop = chatLogElem.scrollHeight;
+            } else {
+                const indicator = document.getElementById('thinkingIndicator');
+                if (indicator) {
+                    indicator.remove();
+                }
+            }
+            // Desativa/ativa inputs e botões (todos os elementos interativos)
+            userInputElem.disabled = thinking || showCodeCanvas;
+            deepResearchBtn.disabled = thinking || showCodeCanvas;
+            canvasBtn.disabled = thinking || showCodeCanvas;
+            learnInputElem.disabled = thinking || showCodeCanvas; // hidden
+            learnBtn.disabled = thinking || showCodeCanvas; // hidden
+        };
+
+        /**
+         * Atualiza o dicionário da IA no Firestore.
+         * @param {object} newDictionary - O objeto do dicionário a guardar.
+         */
+        const updateDictionaryInFirestore = async (newDictionary) => {
+            if (!db || !userId) {
+                console.error("Firestore não inicializado ou utilizador não autenticado.");
+                return;
+            }
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-ai-app';
+            const dictionaryDocRef = doc(db, `artifacts/${appId}/public/data/ai_dictionary/main_dictionary`);
+            try {
+                const sanitizedDictionary = JSON.parse(JSON.stringify(newDictionary)); // Clonar profundamente e remover indefinidos
+                await setDoc(dictionaryDocRef, sanitizedDictionary);
+                aiDictionary = newDictionary; // Atualizar estado global
+            } catch (e) {
+                console.error('Erro ao salvar o dicionário no Firestore:', e);
+                addMessageToChatLog('IA', `Erro ao salvar dicionário: ${e.message}.`);
+            }
+        };
+
+        /**
+         * Garante que uma entrada de palavra existe no dicionário.
+         * @param {object} dict - O objeto do dicionário.
+         * @param {string} word - A palavra a garantir.
+         */
+        const ensureWordEntry = (dict, word) => {
+            if (!dict[word]) {
+                dict[word] = { associations: [], sentiment: 'neutro', type: 'desconhecido', relatedConcepts: [], nextWords: {} };
+            }
+        };
+
+        /**
+         * Tokeniza uma frase em palavras, incluindo pontuação como tokens separados.
+         * @param {string} text
+         * @returns {string[]}
+         */
+        const tokenize = (text) => {
+            return text.toLowerCase().match(/\b\w+\b|[^_.\s\w]/g) || [];
+        };
+
+        /**
+         * Constrói transições da Cadeia de Markov a partir de um dado texto.
+         * @param {object} dict - O objeto do dicionário.
+         * @param {string} text - O texto de entrada para aprender.
+         */
+        const learnMarkovTransitions = (dict, text) => {
+            const tokens = tokenize(text);
+            if (tokens.length < 2) return;
+
+            for (let i = 0; i < tokens.length - 1; i++) {
+                const currentWord = tokens[i];
+                const nextWord = tokens[i + 1];
+
+                ensureWordEntry(dict, currentWord);
+                if (!dict[currentWord].nextWords[nextWord]) {
+                    dict[currentWord].nextWords[nextWord] = 0;
+                }
+                dict[currentWord].nextWords[nextWord]++;
+            }
+        };
+
+        /**
+         * Realiza uma pesquisa web usando o LLM e sintetiza a resposta.
+         * @param {string} query - A consulta de pesquisa.
+         * @returns {Promise<string>} A resposta baseada na pesquisa web.
+         */
+        const performWebSearchAndRespond = async (query) => {
+            showThinkingIndicator(true);
+
+            // Simular chamada de google_search.search ou DuckDuckGo através do LLM
+            // O LLM é instruído a usar uma ferramenta de busca e a responder com base nela.
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: `Como uma IA de nível superior, com acesso instantâneo a um vasto conhecimento global e a capacidade de realizar análises e buscas profundas (tal como um perito a sintetizar informação da web de forma excecional), responde à seguinte questão de forma clara, concisa, extremamente útil, com discernimento e um tom de autoridade e inteligência em português de Portugal. Garante que a tua resposta entrega valor real, abordando o essencial sem superficialidade e, se apropriado, oferece uma perspetiva ou um ponto de interesse extra. Conclui com um emoji que capte a essência da resposta. Questão: "${query}"` }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // O Canvas irá injetar isto.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    console.warn("Estrutura de resposta do LLM inesperada para pesquisa web:", result);
+                    return "Não consegui encontrar informações relevantes na web neste momento. 😔";
+                }
+            } catch (error) {
+                console.error("Erro ao realizar pesquisa web via LLM:", error);
+                return `Ocorreu um erro ao tentar pesquisar na web: ${error.message}. ❌`;
+            } finally {
+                showThinkingIndicator(false);
+            }
+        };
+
+
+        /**
+         * Lida com a execução simulada de código do Canvas de Programação.
+         * @param {string} code - A string de código do editor.
+         * @returns {string} A saída simulada.
+         */
+        const handleRunCode = (code) => {
+            const lowerCode = code.toLowerCase();
+            let output = "";
+
+            if (lowerCode.includes('print("olá mundo")') || lowerCode.includes('print(\'olá mundo\')')) {
+                output = "Olá Mundo! 👋";
+            } else if (lowerCode.includes('soma(')) {
+                const sumMatch = lowerCode.match(/soma\((\d+),\s*(\d+)\)/);
+                if (sumMatch) {
+                    const num1 = parseInt(sumMatch[1]);
+                    const num2 = parseInt(sumMatch[2]);
+                    output = `A soma de ${num1} e ${num2} é ${num1 + num2}. ✨`;
+                } else {
+                    output = "Erro: Sintaxe inválida para 'soma()'. Tenta 'soma(numero1, numero2)'. ⚠️";
+                }
+            } else if (lowerCode.includes('multiplica(')) {
+                const multiplyMatch = lowerCode.match(/multiplica\((\d+),\s*(\d+)\)/);
+                if (multiplyMatch) {
+                    const num1 = parseInt(multiplyMatch[1]);
+                    const num2 = parseInt(multiplyMatch[2]);
+                    output = `A multiplicação de ${num1} por ${num2} é ${num1 * num2}. ✨`;
+                } else {
+                    output = "Erro: Sintaxe inválida para 'multiplica()'. Tenta 'multiplica(numero1, numero2)'. ⚠️";
+                }
+            }
+            else {
+                output = "Comando de código não reconhecido. Tenta 'print(\"Olá Mundo\")', 'soma(x, y)' ou 'multiplica(x, y)'. 🧐";
+            }
+            return output;
+        };
+
+        /**
+         * Processa comandos de aprendizagem (explícitos e implícitos) e atualiza o dicionário da IA.
+         * @param {string} input - A entrada do utilizador (comando de aprendizagem ou mensagem de chat).
+         * @param {boolean} isExplicitLearning - Verdadeiro se for do campo "Ensina a IA", falso se for do chat.
+         * @returns {string | null} Mensagem de feedback da IA ou nulo se a aprendizagem for implícita.
+         */
+        const processInputForLearning = async (input, isExplicitLearning) => {
+            const normalizedInput = input.toLowerCase().trim();
+            let newDictionary = { ...aiDictionary }; // Cria uma cópia mutável
+            let learningOccurred = false;
+            let feedbackMessage = null;
+
+            // --- Comandos de Aprendizagem Explícitos (mantidos em segundo plano) ---
+            if (isExplicitLearning) {
+                const associationMatch = normalizedInput.match(/^(aprende que\s+)?(.+)\s+é\s+(.+)$/);
+                if (associationMatch) {
+                    const primaryWord = associationMatch[2].trim();
+                    const associatedWord = associationMatch[3].trim();
+                    ensureWordEntry(newDictionary, primaryWord);
+                    if (!newDictionary[primaryWord].associations.includes(associatedWord)) {
+                        newDictionary[primaryWord].associations.push(associatedWord);
+                        ensureWordEntry(newDictionary, associatedWord);
+                        if (!newDictionary[associatedWord].associations.includes(primaryWord)) {
+                            newDictionary[associatedWord].associations.push(primaryWord);
+                        }
+                        learningOccurred = true;
+                        feedbackMessage = `Entendido! "${primaryWord}" agora está associado a "${associatedWord}". ✅`;
+                    } else {
+                        feedbackMessage = `Já sei que "${primaryWord}" está associado a "${associatedWord}". 😉`;
+                    }
+                }
+
+                const sentimentMatch = normalizedInput.match(/^isto é\s+(bom|mau):\s*(.+)$/);
+                if (!learningOccurred && sentimentMatch) {
+                    const sentiment = sentimentMatch[1];
+                    const targetPhrase = sentimentMatch[2].trim();
+                    ensureWordEntry(newDictionary, targetPhrase);
+                    newDictionary[targetPhrase].sentiment = sentiment;
+                    learningOccurred = true;
+                    feedbackMessage = `Anotei que "${targetPhrase}" é ${sentiment}. ${getEmoji(sentiment)}`;
+                }
+
+                const typeMatch = normalizedInput.match(/^classifica\s+(.+)\s+como\s+(.+)$/);
+                if (!learningOccurred && typeMatch) {
+                    const word = typeMatch[1].trim();
+                    const type = typeMatch[2].trim();
+                    ensureWordEntry(newDictionary, word);
+                    newDictionary[word].type = type;
+                    learningOccurred = true;
+                    feedbackMessage = `Entendido! "${word}" é agora classificado como "${type}". 👍`;
+                }
+
+                const linkMatch = normalizedInput.match(/^liga\s+(.+)\s+a\s+(.+)$/);
+                if (!learningOccurred && linkMatch) {
+                    const word1 = linkMatch[1].trim();
+                    const word2 = linkMatch[2].trim();
+                    ensureWordEntry(newDictionary, word1);
+                    if (!newDictionary[word1].relatedConcepts.includes(word2)) {
+                        newDictionary[word1].relatedConcepts.push(word2);
+                    }
+                    ensureWordEntry(newDictionary, word2);
+                    if (!newDictionary[word2].relatedConcepts.includes(word1)) {
+                        newDictionary[word2].relatedConcepts.push(word1);
+                    }
+                    learningOccurred = true;
+                    feedbackMessage = `Certo! Fiz a ligação entre "${word1}" e "${word2}". 🔗`;
+                }
+
+                if (!learningOccurred) {
+                    feedbackMessage = "Não entendi como ensinar essa frase. Tenta 'aprende que X é Y', 'isto é bom/mau: frase', 'classifica X como Y', ou 'liga X a Y'. 🤔";
+                }
+
+            } else { // --- Aprendizagem Implícita de Mensagens de Chat ---
+                // Aprende sempre as transições da Cadeia de Markov de cada mensagem de chat
+                learnMarkovTransitions(newDictionary, normalizedInput);
+                learningOccurred = true; // Marcar como aprendizagem ocorrida para atualização da Cadeia de Markov
+
+                // Associação Informal: "X é Y" ou "X está Y"
+                const informalAssociationMatch = normalizedInput.match(/(.+)\s+(?:é|está)\s+(.+)\b/);
+                if (informalAssociationMatch) {
+                    const primaryWord = informalAssociationMatch[1].trim();
+                    const associatedWord = informalAssociationMatch[2].trim();
+                    if (primaryWord.length > 2 && associatedWord.length > 2 && !['eu', 'você', 'tu', 'ele', 'ela', 'nós', 'vós', 'eles', 'elas', 'que', 'isso', 'isto'].includes(primaryWord)) {
+                        ensureWordEntry(newDictionary, primaryWord);
+                        if (!newDictionary[primaryWord].associations.includes(associatedWord)) {
+                            newDictionary[primaryWord].associations.push(associatedWord);
+                            ensureWordEntry(newDictionary, associatedWord);
+                            if (!newDictionary[associatedWord].associations.includes(primaryWord)) {
+                                newDictionary[associatedWord].associations.push(primaryWord);
+                            }
+                            learningOccurred = true;
+                        }
+                    }
+                }
+
+                // Sentimento Positivo: "Eu gosto de X", "Amo Y", "Isso é excelente"
+                const positiveSentimentMatch = normalizedInput.match(/(eu\s+)?(gosto de|amo|adoro|sou feliz com|curto|adorei|incrível|excelente|fantástico|maravilhoso|perfeito|adorável|lindo|gostei muito|adoro muito|adoro-te)\s+(.+)/);
+                if (positiveSentimentMatch) {
+                    const target = positiveSentimentMatch[3].trim();
+                    if (target.length > 1 && !['isso', 'isto', 'que', 'muito'].includes(target)) {
+                        ensureWordEntry(newDictionary, target);
+                        if (newDictionary[target].sentiment !== 'bom') {
+                            newDictionary[target].sentiment = 'bom';
+                            learningOccurred = true;
+                        }
+                    }
+                }
+
+                // Sentimento Negativo: "Eu não gosto de X", "Odeio Y", "Isso é péssimo"
+                const negativeSentimentMatch = normalizedInput.match(/(eu\s+)?(não gosto de|odeio|detesto|sou triste com|aborreço|péssimo|horrível|terrível|detestável|chato|ruim|não gostei|odeio muito)\s+(.+)/);
+                if (negativeSentimentMatch) {
+                    const target = negativeSentimentMatch[3].trim();
+                    if (target.length > 1 && !['isso', 'isto', 'que', 'muito'].includes(target)) {
+                        ensureWordEntry(newDictionary, target);
+                        if (newDictionary[target].sentiment !== 'mau') {
+                            newDictionary[target].sentiment = 'mau';
+                            learningOccurred = true;
+                        }
+                    }
+                }
+
+                // Aprendizagem implícita de conceitos relacionados gerais a partir de frases como "X tem Y" ou "X possui Y"
+                const generalRelationMatch = normalizedInput.match(/(.+)\s+(tem|possui)\s+(.+)/);
+                if (generalRelationMatch) {
+                    const word1 = generalRelationMatch[1].trim();
+                    const word2 = generalRelationMatch[3].trim();
+                    if (word1.length > 2 && word2.length > 2 && !['eu', 'você', 'tu', 'ele', 'ela', 'nós', 'vós', 'eles', 'elas', 'que', 'isso', 'isto'].includes(word1)) {
+                        ensureWordEntry(newDictionary, word1);
+                        if (!newDictionary[word1].relatedConcepts.includes(word2)) {
+                            newDictionary[word1].relatedConcepts.push(word2);
+                            learningOccurred = true;
+                        }
+                        ensureWordEntry(newDictionary, word2);
+                        if (!newDictionary[word2].relatedConcepts.includes(word1)) {
+                            newDictionary[word2].relatedConcepts.push(word1);
+                            learningOccurred = true;
+                        }
+                    }
+                }
+            }
+
+            if (learningOccurred) {
+                await updateDictionaryInFirestore(newDictionary);
+            }
+            return feedbackMessage;
+        };
+
+        /**
+         * Gera uma frase usando a Cadeia de Markov.
+         * @param {string} startWord - A palavra para iniciar a frase.
+         * @param {number} maxLength - Número máximo de palavras na frase.
+         * @returns {string} A frase gerada.
+         */
+        const generateSentenceWithMarkov = (startWord, maxLength = 35) => { // Increased max length again
+            let sentence = [];
+            let currentWord = startWord;
+            let iteration = 0;
+
+            // Garante que a palavra inicial está no dicionário
+            if (!aiDictionary[currentWord]) {
+                // Fallback se a palavra inicial não estiver no dicionário ou não tiver transições
+                const availableWords = Object.keys(aiDictionary).filter(key => aiDictionary[key].nextWords && Object.keys(aiDictionary[key].nextWords).length > 0);
+                if (availableWords.length > 0) {
+                    currentWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+                } else {
+                    return "Não consigo formar uma frase com o que sei.";
+                }
+            }
+
+            // Coloca a primeira palavra da frase em maiúscula
+            if (currentWord.length > 0) {
+                sentence.push(currentWord.charAt(0).toUpperCase() + currentWord.slice(1));
+            }
+
+
+            while (iteration < maxLength && aiDictionary[currentWord] && aiDictionary[currentWord].nextWords && Object.keys(aiDictionary[currentWord].nextWords).length > 0) {
+                const nextWordsOptions = aiDictionary[currentWord].nextWords;
+                const possibleNextWords = Object.keys(nextWordsOptions);
+                let totalCount = 0;
+                for (const word in nextWordsOptions) {
+                    totalCount += nextWordsOptions[word];
+                }
+
+                let randomIndex = Math.floor(Math.random() * totalCount);
+                let chosenNextWord = null;
+
+                for (const word of possibleNextWords) {
+                    randomIndex -= nextWordsOptions[word];
+                    if (randomIndex < 0) {
+                        chosenNextWord = word;
+                        break;
+                    }
+                }
+
+                if (chosenNextWord) {
+                    sentence.push(chosenNextWord);
+                    currentWord = chosenNextWord;
+                    iteration++;
+
+                    // Parar se for encontrada pontuação
+                    if (['.', '!', '?'].includes(currentWord)) {
+                        break;
+                    }
+                } else {
+                    break; // Não deve acontecer se a lógica estiver correta, mas como salvaguarda
+                }
+            }
+
+            // Garante que a frase termina com pontuação se ainda não o fez
+            let finalSentence = sentence.join(' ');
+            if (finalSentence.length > 0 && !['.', '!', '?'].includes(finalSentence[finalSentence.length - 1])) {
+                finalSentence += '.';
+            }
+
+            return finalSentence;
+        };
+
+        /**
+         * Ajuda a obter um emoji com base no tipo/sentimento.
+         * @param {string} type - O tipo de resposta (ex: 'facto', 'bom', 'mau', 'raciocínio').
+         * @returns {string} Um emoji apropriado.
+         */
+        const getEmoji = (type) => {
+            const emojis = emojiMap[type] || emojiMap['default'];
+            const emojiArray = emojis.split(''); // Dividir em caracteres de emoji individuais
+            return emojiArray[Math.floor(Math.random() * emojiArray.length)];
+        };
+
+
+        /**
+         * Gera uma resposta da IA com base na entrada do utilizador, dicionário interno e LLM.
+         * Prioriza o conhecimento interno, a menos que a pesquisa profunda seja explicitamente solicitada.
+         * @param {string} input - A entrada do utilizador.
+         * @returns {string} A resposta gerada pela IA.
+         */
+        const generateAiResponse = async (input) => {
+            const normalizedInput = input.toLowerCase().trim();
+            const inputTokens = tokenize(normalizedInput);
+
+            // --- Prioridade 1: Comandos específicos (como abrir o canvas) ---
+            if (normalizedInput.includes('abre o canvas de programação') || normalizedInput.includes('programa')) {
+                showCodeCanvasModal();
+                return `A abrir o Canvas de Programação. Diverte-te a codificar! ${getEmoji('programar')}`;
+            }
+
+            // --- Prioridade 2: Determinar se o LLM deve ser usado para uma 'Pesquisa Profunda' ou Raciocínio ---
+            const isReasoningQuery = normalizedInput.match(/(?:compara|qual a diferença entre)\s+(.+)\s+(?:e|com)\s+(.+)/) ||
+                                     normalizedInput.match(/se\s+(.+)\s+é\s+(.+),\s+então\s+(.+)\?/);
+            const explicitFactualKeywords = ['o que é', 'quem é', 'onde é', 'como funciona', 'qual a capital de', 'o que significa', 'o que são', 'fale sobre', 'explica', 'quanto é', 'quando é', 'me diga sobre', 'informe-me sobre'];
+            const creativeOrOpinionKeywords = [
+                'escreve', 'cria', 'gera', 'dá-me uma ideia', 'o que achas de', 'opinião sobre', 'qual é o melhor',
+                'imita', 'compara e contrasta', 'perspectivas sobre', 'analisa', 'explica em detalhe',
+                'diz-me sobre', 'narra', 'descreve', 'inventa', 'imagina'
+            ];
+            const isFactualOrInterrogative = explicitFactualKeywords.some(keyword => normalizedInput.startsWith(keyword)) ||
+                                             ['porquê', 'onde', 'quando', 'qual', 'quem', 'como'].some(word => normalizedInput.includes(word)); // Added 'como' here
+            const isCreativeOrOpinionQuery = creativeOrOpinionKeywords.some(keyword => normalizedInput.includes(keyword));
+
+            // Determine if a significant portion of the input is unknown to the internal dictionary
+            const unknownTokens = inputTokens.filter(token => !aiDictionary[token] || Object.keys(aiDictionary[token].nextWords).length === 0);
+            const ratioOfUnknowns = inputTokens.length > 0 ? unknownTokens.length / inputTokens.length : 0;
+
+            // Trigger LLM if:
+            // 1. Explicitly requested via button.
+            // 2. It's a reasoning, factual, or interrogative question.
+            // 3. It's a creative or opinion-based query.
+            // 4. The query is moderately long (>= 4 words) AND more than 40% of words are unknown to internal dictionary.
+            // 5. The query is very short (1-3 words) AND none of its words are known to the internal dictionary (avoids generic "Olá" responses for truly unknown short queries).
+            const isImplicitDeepDiveNeeded = isFactualOrInterrogative ||
+                                             isCreativeOrOpinionQuery ||
+                                             (inputTokens.length >= 4 && ratioOfUnknowns > 0.4) ||
+                                             (inputTokens.length <= 3 && ratioOfUnknowns === 1);
+
+
+            if (isWebSearchRequested || isReasoningQuery || isImplicitDeepDiveNeeded) {
+                return await performWebSearchAndRespond(input);
+            }
+
+            // --- Prioridade 3: Tentar o Conhecimento Interno (Dicionário e Cadeia de Markov) ---
+            let seedWord = null;
+            let primarySentiment = 'neutro';
+            let relevantAssociations = [];
+            let relevantRelatedConcepts = [];
+            let foundInternalKnowledge = false;
+
+            for (const token of inputTokens) {
+                if (aiDictionary[token]) {
+                    const data = aiDictionary[token];
+                    if (data.sentiment !== 'neutro') {
+                        primarySentiment = data.sentiment;
+                    }
+                    if (data.associations && data.associations.length > 0) {
+                        relevantAssociations = relevantAssociations.concat(data.associations);
+                        foundInternalKnowledge = true;
+                    }
+                    if (data.relatedConcepts && data.relatedConcepts.length > 0) {
+                        relevantRelatedConcepts = relevantRelatedConcepts.concat(data.relatedConcepts);
+                        foundInternalKnowledge = true;
+                    }
+                    // Prioritize longer words as seeds for potentially richer Markov chains
+                    if (data.nextWords && Object.keys(data.nextWords).length > 0 && (!seedWord || token.length > seedWord.length)) {
+                        seedWord = token;
+                    }
+                }
+            }
+
+            let responseParts = [];
+
+            // Tenta gerar uma frase com a Cadeia de Markov se houver uma palavra semente
+            if (seedWord) {
+                let markovSentence = generateSentenceWithMarkov(seedWord);
+                // Only consider valid Markov sentences
+                if (markovSentence && markovSentence.length > 10 && !markovSentence.includes("Não consigo formar uma frase com o que sei.")) {
+                    responseParts.push(markovSentence);
+                }
+            }
+
+            // Add associations and related concepts if found and current response is short
+            if (foundInternalKnowledge) {
+                let knowledgeAdded = false;
+                if (relevantAssociations.length > 0 && (responseParts.length === 0 || responseParts[0].length < 30)) {
+                    responseParts.push(`Sei que isso está ligado a "${relevantAssociations[0]}".`);
+                    knowledgeAdded = true;
+                }
+                if (relevantRelatedConcepts.length > 0 && (responseParts.length === 0 || responseParts.join(' ').length < 50)) {
+                    if (!knowledgeAdded || relevantAssociations[0] !== relevantRelatedConcepts[0]) { // Avoid redundancy
+                        responseParts.push(`Há uma conexão com "${relevantRelatedConcepts[0]}".`);
+                    }
+                }
+            }
+
+            // Adiciona feedback de sentimento se houver e nenhuma outra resposta mais substancial foi gerada
+            if (primarySentiment !== 'neutro' && responseParts.length < 2) {
+                if (primarySentiment === 'bom') {
+                    responseParts.push(`Isso soa muito positivo! ${getEmoji('bom')}`);
+                } else if (primarySentiment === 'mau') {
+                    responseParts.push(`Parece que isso não é tão bom. ${getEmoji('mau')}`);
+                }
+            }
+
+            // --- Prioridade 4: Fallback para o LLM para respostas conversacionais se o conhecimento interno for fraco/insuficiente ---
+            // A IA deve parecer sempre inteligente, então se a resposta interna não for boa, usa o LLM.
+            if (responseParts.length === 0 || responseParts.every(part => part.trim() === '.' || part.includes("Não consigo formar uma frase com o que sei.") || part.includes("Não encontrei uma resposta específica") || part.join(' ').length < 30)) { // Increased minimum length for conversational fallback to 30 chars
+                // Se a IA não conseguir dar uma resposta inteligente e substancial com o seu conhecimento interno, recorre ao LLM.
+                const llmConversationalPrompt = `Responde à seguinte frase ou pergunta de forma natural, envolvente, útil e conversacional em português de Portugal. Evita respostas genéricas e foca-te em manter e estender o diálogo, mostrando a tua inteligência contextual e a tua capacidade de raciocínio. Tenta adicionar uma pequena observação ou fazer uma pergunta de acompanhamento para incentivar a continuação da conversa. Termina com um emoji apropriado. Frase: "${input}"`;
+                const llmResponse = await performWebSearchAndRespond(llmConversationalPrompt);
+                if (llmResponse && !llmResponse.includes("Não consegui encontrar informações relevantes")) {
+                    return llmResponse;
+                }
+            }
+
+            // --- Fallback Final: Respostas Genéricas (muito raramente alcançado agora) ---
+            if (responseParts.length === 0 || responseParts.every(part => part.trim() === '.' || part.includes("Não consigo formar uma frase com o que sei.") || part.includes("Não encontrei uma resposta específica"))) {
+                const defaultResponses = [
+                    `Que tema interessante! Podes desenvolver um pouco mais? ${getEmoji('pergunta')}`,
+                    `Estou sempre a aprender. O que mais podes partilhar sobre isso? ${getEmoji('pergunta')}`,
+                    `Ainda estou a processar isso. Conta-me algo mais! ${getEmoji('default')}`,
+                    `A tua perspicácia é notável! Continuo a evoluir. ${getEmoji('elogio')}`
+                ];
+                return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+            }
+
+            // Combinar as partes numa resposta coerente
+            let finalResponse = responseParts.join(' ');
+            if (finalResponse.length > 0) {
+                // Capitalize first letter of the overall response
+                finalResponse = finalResponse.charAt(0).toUpperCase() + finalResponse.slice(1);
+            }
+            return finalResponse;
+        };
+
+
+        // --- Manipuladores de Eventos ---
+        const handleSend = async () => {
+            const userText = userInputElem.value.trim();
+            if (userText) {
+                addMessageToChatLog('Utilizador', userText); // Display user message
+                await processInputForLearning(userText, false); // Aprende implicitamente
+                isWebSearchRequested = false; // Garante que a pesquisa web não é acionada por padrão para a resposta principal
+                const aiResponse = await generateAiResponse(userText); // Aguarda resposta assíncrona
+                addMessageToChatLog('IA', aiResponse); // Display AI response
+                userInputElem.value = ''; // Clear input
+            }
+        };
+
+        const handleDeepResearch = async () => {
+            const userText = userInputElem.value.trim();
+            if (userText) {
+                addMessageToChatLog('Utilizador', userText); // Display user message
+                isWebSearchRequested = true; // Sinaliza que é uma solicitação de pesquisa web explícita
+                const aiResponse = await generateAiResponse(userText);
+                addMessageToChatLog('IA', `(Pesquisa Profunda) ${aiResponse}`); // Indica que a resposta veio da pesquisa
+                userInputElem.value = '';
+                isWebSearchRequested = false; // Redefine a flag
+            }
+        };
+
+        // handleLearn function remains the same, but its UI input elements are hidden
+        const handleLearn = async (learnText) => { // Modified to accept learnText directly
+            if (learnText) {
+                const feedback = await processInputForLearning(learnText, true); // Aprende explicitamente
+                if (feedback) {
+                    // For explicit learning via commands, log feedback in chat
+                    addMessageToChatLog('IA', feedback);
+                }
+            }
+        };
+
+        const handleNewChat = () => {
+            chatLogElem.innerHTML = ''; // Clear all messages
+            centralGreetingElem.classList.remove('hidden');
+            chatLogElem.classList.add('hidden');
+            userIdDisplayElem.classList.add('hidden');
+            isChatVisible = false;
+            userInputElem.value = '';
+            centralGreetingElem.textContent = `Olá, ${auth.currentUser?.isAnonymous ? 'utilizador anónimo' : 'devil'}`;
+        };
+
+
+        const showCodeCanvasModal = () => {
+            codeCanvasModal.classList.remove('hidden');
+            showCodeCanvas = true; // Atualiza estado global
+            userInputElem.disabled = true;
+            deepResearchBtn.disabled = true;
+            canvasBtn.disabled = true;
+            learnInputElem.disabled = true; // hidden
+            learnBtn.disabled = true; // hidden
+        };
+
+        const hideCodeCanvasModal = () => {
+            codeCanvasModal.classList.add('hidden');
+            showCodeCanvas = false; // Atualiza estado global
+            userInputElem.disabled = false;
+            deepResearchBtn.disabled = false;
+            canvasBtn.disabled = false;
+            learnInputElem.disabled = false; // hidden
+            learnBtn.disabled = false; // hidden
+            outputContentElem.textContent = 'Nenhuma saída ainda.'; // Limpa a saída
+            codeContentElem.value = '// Escreve o teu código aqui\n// Ex: print("Olá Mundo")\n// Ex: soma(5, 3)'; // Redefine o conteúdo do código
+        };
+
+        // --- Listeners de Eventos ---
+        window.onload = async () => {
+            try {
+                const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+                if (!firebaseConfig) {
+                    console.error("Configuração do Firebase não encontrada. Não é possível inicializar o Firebase.");
+                    return; // Fail silently on UI if no Firebase config
+                }
+
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        userIdDisplayElem.textContent = `ID de Utilizador: ${userId} (Dicionário partilhado para esta app)`;
+                        
+                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-ai-app';
+                        const dictionaryDocRef = doc(db, `artifacts/${appId}/public/data/ai_dictionary/main_dictionary`);
+
+                        onSnapshot(dictionaryDocRef, (docSnap) => {
+                            if (docSnap.exists()) {
+                                aiDictionary = docSnap.data();
+                                console.log('Dicionário carregado/atualizado em tempo real:', aiDictionary);
+                            } else {
+                                console.log('Dicionário não encontrado no Firestore. A usar dicionário inicial pré-preenchido.');
+                                aiDictionary = initialAiDictionary;
+                                updateDictionaryInFirestore(initialAiDictionary); // Salva o inicial no Firestore
+                            }
+                            if (chatLogElem.children.length === 0 && !isChatVisible) {
+                                centralGreetingElem.innerHTML = `Olá, ${user.isAnonymous ? 'utilizador anónimo' : 'devil'}`;
+                            }
+                        }, (error) => {
+                            console.error("Erro ao obter dicionário do Firestore:", error);
+                            aiDictionary = initialAiDictionary; // Fallback
+                            if (chatLogElem.children.length === 0 && !isChatVisible) {
+                                centralGreetingElem.innerHTML = `Olá, utilizador!`; // Fallback greeting
+                            }
+                        });
+                    } else {
+                        try {
+                            if (initialAuthToken) {
+                                await signInWithCustomToken(auth, initialAuthToken);
+                            } else {
+                                await signInAnonymously(auth);
+                            }
+                        } catch (error) {
+                            console.error("Erro ao iniciar sessão:", error);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Falha ao inicializar o Firebase em window.onload:", error);
+            }
+        };
+
+        // Main input bar interaction: Enter key
+        userInputElem.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const userText = userInputElem.value.trim();
+                // Check for explicit learning commands first, even with hidden input
+                const learnCommandMatch = userText.match(/^(aprende que|isto é (bom|mau):|classifica|liga)\s*(.+)/i);
+                if (learnCommandMatch) {
+                    handleLearn(userText); // Pass the text directly to handleLearn
+                    userInputElem.value = ''; // Clear the input after processing
+                } else {
+                    handleSend(); // Default action for other inputs
+                }
+            }
+        });
+
+        deepResearchBtn.addEventListener('click', handleDeepResearch);
+        canvasBtn.addEventListener('click', showCodeCanvasModal);
+        newChatBtn.addEventListener('click', handleNewChat); // New Chat button listener
+
+        closeCanvasBtn.addEventListener('click', hideCodeCanvasModal);
+        runCodeBtn.addEventListener('click', () => {
+            const code = codeContentElem.value;
+            const output = handleRunCode(code);
+            outputContentElem.textContent = output;
+        });
+
+        // Fechar o modal ao clicar fora (opcional, mas boa UX)
+        codeCanvasModal.addEventListener('click', (e) => {
+            if (e.target === codeCanvasModal) {
+                hideCodeCanvasModal();
+            }
+        });
+
+    </script>
 </body>
 </html>
